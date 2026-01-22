@@ -1,0 +1,7 @@
+# vLLM nightly required for Step3-VL-10B support (PR #32329)
+--extra-index-url https://wheels.vllm.ai/nightly
+vllm
+
+# HuggingFace deps
+transformers>=4.57.0
+accelerate

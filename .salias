@@ -1,9 +1,32 @@
 clear
 set -gx ENV_NAME '.venv'
 alias rmenv='rm -rf .envrc $ENV_NAME uv.lock; exit'
-alias mkenv='mkuv $ENV_NAME 3.12.10'
+alias mkenv='mkuv $ENV_NAME 3.11'
 
 function install
    clear
    uv pip install pip
+   uv pip install --prerelease=allow -r requirements.txt
+end
+
+# Launch vLLM server for Step3-VL-10B (CPU offload for 16GB VRAM)
+function run
+   vllm serve ./Step3-VL-10B-HF \
+      --port 8100 \
+      --tensor-parallel-size 1 \
+      --trust-remote-code \
+      --max-model-len 4096 \
+      --gpu-memory-utilization 0.90 \
+      --cpu-offload-gb 6 \
+      --enforce-eager
+end
+
+# Full precision (needs >20GB VRAM)
+function serve-fp
+   vllm serve ./Step3-VL-10B-HF \
+      --port 8100 \
+      --tensor-parallel-size 1 \
+      --trust-remote-code \
+      --max-model-len 4096 \
+      --gpu-memory-utilization 0.95
 end
